@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<!-- This makes the AngularJS app available to the whole web page. It can go elsewhere but I haven't done that yet. -->
+<html ng-app="brailleapp">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+
+    <!-- I used a tool called bower to get current copies of the libraries. Bower puts things under
+         bower_components by default. There's a way to change that but I never bothered to figure that out.
+    -->
+
+    <!-- I have no idea if we really need jQuery. Just putting it in just in case. -->
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+
+    <!-- AngularJS -->
+    <script src="bower_components/angularjs/angular.min.js"></script>
+
+     <!-- This is our app. -->
+    <script src="braille-app.js"></script>
+
+    <!-- This  is the CSS for the squares. Normally this goes in the directives,
+         where you split them out into CSS, HTML and JavaScript.
+
+         But we can't do directives normally when we open up a file on the file system
+         with the web browser because the web browser prohibits JavaScript from accessing other files.
+
+         So we have to mush things together in kind of an ugly way. HTML is in the JS file as a big string and
+         the CSS is loaded here.
+
+         Annoying. :/
+    -->
+    <link rel="stylesheet" type="text/css" href="index.css" media="screen" />
+</head>
+<body ng-controller="AppMainController">
+    <!-- This gets its value from $scope.data.title -->
+    <h1>{{data.title}}</h1>
+
+    <!-- AngularJS seems to be picky about using <x></x> for directives instead of <x /> which it barfs on. -->
+    <table>
+        <tr>
+            <!-- This loops through $scope.data.dots and makes a new <td> for each iteration.
+                 ng-repeat has to keep track of things, and so needs unique values.
+                 But with text you can get duplicate values so that's no good. So we tell it
+
+                     track by $index
+
+                 so that it tracks things by its index in the array. That's unique so ng-repeat is happy.
+            -->
+            <td ng-repeat="d in data.dots track by $index"><braille-trainer source="d"></braille-trainer></td>
+        </tr>
+    </table>
+</body>
+</html>
