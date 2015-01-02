@@ -2,7 +2,7 @@
  * Created by strawberry on 12/28/2014.
  */
 angular.module("brailleapp", [])
-    .controller("AppMainController", function ($scope, TextToBraille) {
+    .controller("AppMainController", function ($scope, $log, TextToBraille) {
         // This is where program logic would go.
 
         // The AngularJS stuff that's in the HTML file can access data on the $scope variable.
@@ -32,6 +32,58 @@ angular.module("brailleapp", [])
         $scope.clear = function () {
             $scope.data.text = "";
             $scope.data.dots = [];
+        };
+
+        $scope.clearKeyText = function () {
+            $scope.data.keyText = "";
+        };
+
+        $scope.data.keys = {};
+        $scope.testKeyDown = function (event) {
+            var key = String.fromCharCode(event.keyCode);
+            if (" " <= key && key <= "`") {
+                $scope.data.keys[key] = true;
+            }
+        };
+
+        $scope.testKeyUp = function (event) {
+            var property;
+            var key = String.fromCharCode(event.keyCode);
+            if (" " <= key && key <= "`") {
+                $scope.data.keys[key] = false;
+
+                // See if all the keys are up now.
+                var anyPressed = false;
+                for (property in $scope.data.keys) {
+                    // You have to do hasOwnProperty because otherwise you get trash from inheritance.
+                    if ($scope.data.keys.hasOwnProperty(property)) {
+                        anyPressed |= $scope.data.keys[property];
+                    }
+                }
+
+                if (!anyPressed) {
+                    var chordKeys = "";
+                    for (property in $scope.data.keys) {
+                        // You have to do hasOwnProperty because otherwise you get trash from inheritance.
+                        if ($scope.data.keys.hasOwnProperty(property)) {
+                            chordKeys += property;
+                        }
+                    }
+                    // $log.debug("testKeyUp: ", event, $scope.data.keys, key, anyPressed, chordKeys);
+
+                    $scope.data.chord = chordKeys;
+                    $scope.data.keyText = "";
+                    $scope.data.keys = {};
+                }
+            }
+        };
+
+        $scope.testLoseFocus = function () {
+            $log.debug("Lost focus.");
+            // If focus is lost then  it screws up the chord state.
+            // Reset to nothing.
+            $scope.data.keyText = "";
+            $scope.data.keys = {};
         };
 
         $scope.$watch('data.text', function () {

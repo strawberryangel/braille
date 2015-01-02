@@ -15,7 +15,7 @@
     <!-- AngularJS -->
     <script src="bower_components/angularjs/angular.min.js"></script>
 
-     <!-- This is our app. -->
+    <!-- This is our app. -->
     <script src="braille-app.js"></script>
     <script src="braille-trainer.js"></script>
     <script src="text-to-braille.js"></script>
@@ -31,33 +31,41 @@
 
          Annoying. :/
     -->
-    <link rel="stylesheet" type="text/css" href="index.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="index.css" media="screen"/>
 </head>
 <body ng-controller="AppMainController">
-    <!-- This gets its value from $scope.data.title -->
-    <h1>{{data.title}}</h1>
+<!-- This gets its value from $scope.data.title -->
+<h1>{{data.title}}</h1>
 
-    <section>
-        <!-- AngularJS seems to be picky about using <x></x> for directives instead of <x /> which it barfs on. -->
-        <table>
-            <tr>
-                <!-- This loops through $scope.data.dots and makes a new <td> for each iteration.
-                     ng-repeat has to keep track of things, and so needs unique values.
-                     But with text you can get duplicate values so that's no good. So we tell it
+<section>
+    <!-- AngularJS seems to be picky about using <x></x> for directives instead of <x /> which it barfs on. -->
+    <table>
+        <tr>
+            <!-- This loops through $scope.data.dots and makes a new <td> for each iteration.
+                 ng-repeat has to keep track of things, and so needs unique values.
+                 But with text you can get duplicate values so that's no good. So we tell it
 
-                         track by $index
+                     track by $index
 
-                     so that it tracks things by its index in the array. That's unique so ng-repeat is happy.
-                -->
-                <td ng-repeat="d in data.dots track by $index"><braille-trainer source="d"></braille-trainer></td>
-            </tr>
-        </table>
+                 so that it tracks things by its index in the array. That's unique so ng-repeat is happy.
+            -->
+            <td ng-repeat="d in data.dots track by $index">
+                <braille-trainer source="d"></braille-trainer>
+            </td>
+        </tr>
+    </table>
 
-        <input type="text" ng-model="data.text">
-        <button type="button" ng-click="clear()">Clear</button>
-    </section>
+    <input type="text" ng-model="data.text">
+    <button type="button" ng-click="clear()">Clear</button>
+</section>
 
-    <section>
-    </section>
+<section ng-keydown="testKeyDown($event)" ng-keyup="testKeyUp($event)">
+    <h1>Chord Testing Place</h1>
+    <input type="text" ng-model="data.keyText" ng-blur="testLoseFocus()">
+    <button type="button" ng-click="clearKeyText()">Clear</button>
+    <p>Keys is {{data.keys | json}}</p>
+
+    <p>Chord is {{ data.chord }}</p>
+</section>
 </body>
 </html>
