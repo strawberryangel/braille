@@ -49,5 +49,8 @@
             <td ng-repeat="d in data.dots track by $index"><braille-trainer source="d"></braille-trainer></td>
         </tr>
     </table>
+
+    <input type="text" ng-model="data.text">
+    <button type="button" ng-click="clear()">Clear</button>
 </body>
 </html>
